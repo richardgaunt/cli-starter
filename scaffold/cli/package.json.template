@@ -5,10 +5,10 @@
   "main": "src/index.js",
   "type": "module",
   "bin": {
-    "{{name}}": "./bin/index.js"
+    "{{name}}": "./bin/index.mjs"
   },
   "scripts": {
-    "start": "node ./bin/index.js",
+    "start": "node ./bin/index.mjs",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "lint": "eslint ."
   },

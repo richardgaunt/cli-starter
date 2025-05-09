@@ -2,15 +2,15 @@
   "name": "cli-starter-kit",
   "version": "1.0.0",
   "description": "CLI starter kit",
-  "main": "index.js",
+  "main": "index.mjs",
   "type": "module",
   "bin": {
-    "gh-pr": "./index.js"
+    "gh-pr": "index.mjs"
   },
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "lint": "eslint .",
-    "start": "node index.js"
+    "start": "node index.mjs"
   },
   "dependencies": {
     "@inquirer/prompts": "^7.5.0"

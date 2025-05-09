@@ -38,20 +38,32 @@ create-cli-template my-cli-app --no-install
 
 ## CLI Options
 
-- `[name]` - Project name (optional)
+- `[name]` - Project directory/package name (optional)
 - `-y, --yes` - Skip all prompts and use defaults
 - `--no-git` - Skip git initialization
 - `--no-install` - Skip dependency installation
+
+## Configuration Prompts
+
+When creating a new CLI application, you'll be asked for:
+
+1. **Package/directory name**: The npm package name and directory name (lowercase with hyphens)
+2. **Human-readable title**: A prettier title for display in README and CLI output
+3. **Project description**: A brief description of what your CLI does
+4. **Author**: Your name (defaults to Git config)
+5. **License**: The license to use (MIT, ISC, Apache-2.0, GPL-3.0)
 
 ## Generated Project Structure
 
 ```
 my-cli-app/
 ├── bin/
-│   └── index.js        # CLI entry point
+│   └── index.mjs        # CLI entry point
 ├── src/
-│   ├── index.js        # Main module exports
-│   └── index.test.js   # Tests for main module
+│   ├── index.mjs        # Main module exports
+│   └── index.test.js    # Tests for main module
+├── tests/
+│   └── index.test.mjs   # Additional tests
 ├── .gitignore
 ├── eslint.config.mjs
 ├── jest.config.mjs

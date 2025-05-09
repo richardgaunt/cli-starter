@@ -7,8 +7,10 @@ export async function getProjectInfo(name, options) {
   
   // Use defaults if --yes flag is provided
   if (options.yes) {
+    const directoryName = name || 'cli-app';
     return {
-      name: name || 'cli-app',
+      name: directoryName, // package/directory name
+      title: directoryName.charAt(0).toUpperCase() + directoryName.slice(1).replace(/-/g, ' '), // Human readable title
       description: '',
       author: gitUser.name,
       license: 'MIT',
@@ -16,10 +18,19 @@ export async function getProjectInfo(name, options) {
     };
   }
   
-  // Prompt for project name if not provided
-  const projectName = name || await input({
-    message: 'Project name:',
-    validate: (value) => /^[a-zA-Z0-9-_]+$/.test(value) || 'Invalid project name'
+  // Prompt for project directory/package name if not provided
+  const packageName = name || await input({
+    message: 'Package/directory name:',
+    validate: (value) => /^[a-zA-Z0-9-_]+$/.test(value) || 'Invalid package name (use lowercase with hyphens)'
+  });
+  
+  // Default title is the package name with first letter capitalized and hyphens replaced with spaces
+  const defaultTitle = packageName.charAt(0).toUpperCase() + packageName.slice(1).replace(/-/g, ' ');
+  
+  // Prompt for human-readable title
+  const title = await input({
+    message: 'Human-readable title:',
+    default: defaultTitle
   });
   
   // Prompt for additional info
@@ -44,7 +55,8 @@ export async function getProjectInfo(name, options) {
   });
   
   return {
-    name: projectName,
+    name: packageName, // package/directory name
+    title, // human readable title
     description,
     author,
     license,

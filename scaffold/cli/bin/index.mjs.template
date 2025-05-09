@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
 import { program } from 'commander';
-import { hello } from '../src/index.js';
+import { hello } from '../src/index.mjs';
 
 program
   .version('1.0.0')
-  .description('CLI application')
+  .description('{{description}}')
   .option('-n, --name <name>', 'your name')
   .action((options) => {
     hello(options.name);

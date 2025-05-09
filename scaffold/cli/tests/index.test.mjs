@@ -1,5 +1,5 @@
 import { jest } from '@jest/globals';
-import { hello } from './index.mjs';
+import { hello } from '../src/index.mjs';
 
 describe('hello', () => {
   let consoleLogSpy;
