@@ -1,0 +1,36 @@
+# {{name}}
+
+{{description}}
+
+## Installation
+
+```bash
+# Install globally
+npm install -g {{name}}
+
+# Or use directly with npx
+npx {{name}}
+```
+
+## Usage
+
+```bash
+{{name}} [options]
+```
+
+## Development
+
+```bash
+# Make the CLI available globally for testing
+npm link
+
+# Run the CLI
+{{name}}
+
+# Run tests
+npm test
+```
+
+## License
+
+{{license}} © {{author}}

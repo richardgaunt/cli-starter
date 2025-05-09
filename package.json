@@ -1,0 +1,38 @@
+{
+  "name": "create-cli-template",
+  "version": "1.0.0",
+  "description": "CLI application starter kit generator",
+  "main": "src/index.js",
+  "type": "module",
+  "bin": {
+    "create-cli-template": "./bin/index.js"
+  },
+  "scripts": {
+    "start": "node ./bin/index.js",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "lint": "eslint ."
+  },
+  "keywords": [
+    "cli",
+    "starter",
+    "scaffold",
+    "template"
+  ],
+  "author": "Richard Gaunt",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^11.1.0",
+    "@inquirer/prompts": "^7.5.0",
+    "fs-extra": "^11.1.1",
+    "handlebars": "^4.7.8",
+    "chalk": "^5.3.0",
+    "ora": "^7.0.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.24.0",
+    "eslint": "^9.25.1",
+    "eslint-plugin-n": "^17.17.0",
+    "globals": "^16.0.0",
+    "jest": "^29.7.0"
+  }
+}

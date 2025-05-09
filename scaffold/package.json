@@ -1,0 +1,27 @@
+{
+  "name": "cli-starter-kit",
+  "version": "1.0.0",
+  "description": "CLI starter kit",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "gh-pr": "./index.js"
+  },
+  "scripts": {
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "lint": "eslint .",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^7.5.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.24.0",
+    "eslint": "^9.25.1",
+    "eslint-plugin-n": "^17.17.0",
+    "globals": "^16.0.0",
+    "jest": "^29.7.0"
+  },
+  "author": "Richard Gaunt",
+  "license": "MIT"
+}
