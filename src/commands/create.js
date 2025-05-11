@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import { getProjectInfo } from '../prompts/index.js';
 import { copyTemplate } from '../utils/fs.js';
 import { initGit } from '../utils/git.js';
-import { installDependencies } from '../utils/npm.js';
+import { installDependencies, updatePackageJson } from '../utils/npm.js';
 import { logger } from '../utils/logger.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -18,24 +18,31 @@ export async function createCommand(name, options) {
     
     // Check if directory exists
     if (fs.existsSync(targetDir)) {
-      if (fs.readdirSync(targetDir).length > 0) {
+      const isEmpty = fs.readdirSync(targetDir).length === 0;
+
+      if (!isEmpty) {
         logger.error(`Directory ${projectInfo.name} already exists and is not empty.`);
-        process.exit(1);
+      } else {
+        logger.error(`Directory ${projectInfo.name} already exists.`);
       }
+      process.exit(1);
     }
     
     // Create project directory
     await fs.ensureDir(targetDir);
-    
-    // Copy CLI template
-    const templatePath = path.resolve(__dirname, '../../scaffold/cli');
+
+    // Copy template files from scaffold directory
+    const templatePath = path.resolve(__dirname, '../../scaffold');
     await copyTemplate(templatePath, targetDir, projectInfo);
-    
+
+    // Update package.json with project information
+    await updatePackageJson(targetDir, projectInfo);
+
     // Initialize git repository
     if (options.git !== false) {
       await initGit(targetDir);
     }
-    
+
     // Install dependencies
     if (options.install !== false) {
       await installDependencies(targetDir);

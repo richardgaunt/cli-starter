@@ -21,6 +21,12 @@ export async function copyTemplate(templatePath, targetPath, variables) {
         const content = await fs.readFile(sourcePath, 'utf8');
         const processed = Handlebars.compile(content)(variables);
         await fs.writeFile(destPath, processed);
+
+        // Make the file executable if it's our entry point script
+        if (targetFileName === 'index.mjs') {
+          await fs.chmod(destPath, 0o755);
+        }
+
         logger.info(`Created ${targetFileName}`);
       } else if (file.name === 'gitignore') {
         // Special case for gitignore to avoid npm issues
