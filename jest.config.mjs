@@ -6,14 +6,15 @@ export default {
   coverageReporters: ['text', 'lcov'],
   collectCoverageFrom: ['*.js', '!jest.setup.js', '!jest.config.mjs', '!eslint.config.mjs'],
   moduleNameMapper: {
-    '^(\\.{1,2}/.*)\\.js$': '$1'
+    '^(\\.{1,2}/.*)\\.(js|mjs)$': '$1'
   },
   transform: {},
   transformIgnorePatterns: ['/node_modules/'],
-  testTimeout: 10000,
+  testTimeout: 30000,
+  setupFilesAfterEnv: ['./jest.setup.js'],
   verbose: true,
   forceExit: true,
   detectOpenHandles: true,
   bail: false,
-  injectGlobals: true
+  injectGlobals: true,
 };
