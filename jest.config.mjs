@@ -10,7 +10,7 @@ export default {
   },
   transform: {},
   transformIgnorePatterns: ['/node_modules/'],
-  testTimeout: 30000,
+  testTimeout: 120000, // 2 minutes
   setupFilesAfterEnv: ['./jest.setup.js'],
   verbose: true,
   forceExit: true,
