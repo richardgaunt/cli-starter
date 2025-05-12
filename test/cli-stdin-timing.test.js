@@ -143,7 +143,7 @@ describe('CLI Application Tests with Fixed Timing', () => {
       inputs: inputs,
       cwd: projectDir,
       timeout: 120000,
-      debug: true
+      debug: false
     });
 
     // Basic verification
@@ -194,7 +194,7 @@ describe('CLI Application Tests with Fixed Timing', () => {
       inputs: [],
       cwd: createdProjectDir,
       timeout: 30000,
-      debug: true
+      debug: false
     });
 
     // Verify help output
@@ -217,7 +217,7 @@ describe('CLI Application Tests with Fixed Timing', () => {
       inputs: ['Command Mode User'],  // Enter a name when prompted
       cwd: createdProjectDir,
       timeout: 30000,
-      debug: true
+      debug: false
     });
 
     // Verify command output
@@ -240,7 +240,7 @@ describe('CLI Application Tests with Fixed Timing', () => {
       inputs: interactiveInputs,
       cwd: createdProjectDir,
       timeout: 30000,
-      debug: true
+      debug: false
     });
 
     // Verify interactive CLI output
@@ -268,7 +268,7 @@ describe('CLI Application Tests with Fixed Timing', () => {
       inputs: invalidInputs,
       cwd: createdProjectDir,
       timeout: 30000,
-      debug: true
+      debug: false
     });
 
     // Verify error handling for invalid command
