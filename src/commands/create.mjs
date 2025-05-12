@@ -1,11 +1,11 @@
 import path from 'path';
 import fs from 'fs-extra';
 import { fileURLToPath } from 'url';
-import { getProjectInfo } from '../prompts/index.js';
-import { copyTemplate } from '../utils/fs.js';
-import { initGit } from '../utils/git.js';
-import { installDependencies, updatePackageJson } from '../utils/npm.js';
-import { logger } from '../utils/logger.js';
+import { getProjectInfo } from '../prompts/index.mjs';
+import { copyTemplate } from '../utils/fs.mjs';
+import { initGit } from '../utils/git.mjs';
+import { installDependencies, updatePackageJson } from '../utils/npm.mjs';
+import { logger } from '../utils/logger.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,7 +15,7 @@ export async function createCommand(name, options) {
     // Get project information
     const projectInfo = await getProjectInfo(name, options);
     const targetDir = path.resolve(process.cwd(), projectInfo.name);
-    
+
     // Check if directory exists
     if (fs.existsSync(targetDir)) {
       const isEmpty = fs.readdirSync(targetDir).length === 0;
@@ -27,7 +27,7 @@ export async function createCommand(name, options) {
       }
       process.exit(1);
     }
-    
+
     // Create project directory
     await fs.ensureDir(targetDir);
 
@@ -47,7 +47,7 @@ export async function createCommand(name, options) {
     if (options.install !== false) {
       await installDependencies(targetDir);
     }
-    
+
     // Display success message
     logger.success(`
 CLI application ${projectInfo.name} created successfully!

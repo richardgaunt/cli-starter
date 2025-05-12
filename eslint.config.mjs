@@ -89,6 +89,11 @@ export default [
       'n/prefer-promises/dns': 'error',
       'n/prefer-promises/fs': 'error',
       'n/no-deprecated-api': 'warn',
+      'n/no-extraneous-import': ['error', {
+        'allowModules': [
+          '@jest/globals'
+        ],
+      }],
       'n/no-unpublished-require': 'off',
       'n/no-missing-import': 'off',
       'n/no-unpublished-import': 'off',

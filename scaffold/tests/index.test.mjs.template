@@ -1,0 +1,241 @@
+// Import test utilities first
+import { describe, test, expect, jest, beforeEach, afterEach } from '@jest/globals';
+
+// Set up mocks before importing the modules being tested
+// Mock the @inquirer/prompts module
+jest.unstable_mockModule('@inquirer/prompts', () => ({
+  input: jest.fn().mockImplementation(async ({ message, default: defaultValue }) => {
+    console.log(`[Mock Prompt] ${message}`);
+    return defaultValue || '';
+  })
+}));
+
+// Create mock implementations for the functions we need to spy on
+const showMainMenuMock = jest.fn().mockImplementation(() => Promise.resolve());
+const helloWorldMock = jest.fn().mockImplementation(() => Promise.resolve());
+
+// Prepare a partial mock for the index module
+const indexModuleMocks = {
+  showMainMenu: showMainMenuMock,
+  helloWorld: helloWorldMock,
+};
+
+// Wait for the mocks to be set up
+const indexModule = await import('../index.mjs');
+
+// Inject the mocks into the imported module
+Object.keys(indexModuleMocks).forEach(key => {
+  // Use defineProperty to avoid read-only property error
+  Object.defineProperty(indexModule, key, {
+    value: indexModuleMocks[key],
+    writable: true
+  });
+});
+
+describe('{{title}} CLI', () => {
+  let consoleLogSpy;
+  let processExitSpy;
+  let originalProcessArgv;
+
+  beforeEach(() => {
+    // Mock console.log
+    consoleLogSpy = jest.spyOn(console, 'log').mockImplementation();
+
+    // Save original process.argv
+    originalProcessArgv = process.argv;
+
+    // Mock process.exit
+    processExitSpy = jest.spyOn(process, 'exit').mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    // Restore console.log
+    consoleLogSpy.mockRestore();
+
+    // Restore process.argv
+    process.argv = originalProcessArgv;
+
+    // Restore process.exit
+    processExitSpy.mockRestore();
+
+    // Clear all mocks
+    jest.clearAllMocks();
+  });
+
+  describe('registerCommands', () => {
+    test('registers a version option', () => {
+      // Create a mock Commander program
+      const mockProgram = {
+        version: jest.fn().mockReturnThis(),
+        description: jest.fn().mockReturnThis(),
+        command: jest.fn().mockReturnThis(),
+        action: jest.fn().mockReturnThis(),
+      };
+
+      // Call the function
+      const result = registerCommands(mockProgram);
+
+      // Verify the program was configured with version
+      expect(mockProgram.version).toHaveBeenCalledWith('1.0.0');
+      expect(mockProgram.description).toHaveBeenCalledWith('{{description}}');
+      expect(result).toBe(mockProgram);
+    });
+  });
+
+  describe('main', () => {
+    test('shows menu when no arguments provided', async () => {
+      // Reset the mock before each test
+      showMainMenuMock.mockClear();
+
+      // Set process.argv to have only node and script
+      process.argv = ['node', 'index.mjs'];
+
+      // Call main from the module
+      await indexModule.main();
+
+      // Verify showMainMenu was called
+      expect(showMainMenuMock).toHaveBeenCalled();
+    });
+  });
+
+  describe('showMainMenu', () => {
+    test('displays menu with application info', async () => {
+      // Restore original implementation to test the real function
+      const originalShowMainMenu = indexModule.showMainMenu;
+
+      // Save the mock function for later restoration
+      const savedMock = indexModuleMocks.showMainMenu;
+
+      try {
+        // Get a reference to the real showMainMenu
+        Object.defineProperty(indexModule, 'showMainMenu', {
+          value: originalShowMainMenu,
+          writable: true
+        });
+
+        // Reset the helloWorld mock
+        helloWorldMock.mockClear();
+
+        // Mock inquirer input to return 'configure'
+        const { input } = await import('@inquirer/prompts');
+        input.mockResolvedValueOnce('configure');
+
+        // Call the real showMainMenu
+        await indexModule.showMainMenu();
+
+        // Verify console.log was called with title and description
+        expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('{{title}}'));
+        expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('{{description}}'));
+
+        // Verify helloWorld was called
+        expect(helloWorldMock).toHaveBeenCalled();
+      } finally {
+        // Restore the mock
+        Object.defineProperty(indexModule, 'showMainMenu', {
+          value: savedMock,
+          writable: true
+        });
+      }
+    });
+
+    test('handles unknown commands', async () => {
+      // Restore original implementation to test the real function
+      const originalShowMainMenu = indexModule.showMainMenu;
+
+      // Save the mock function for later restoration
+      const savedMock = indexModuleMocks.showMainMenu;
+
+      try {
+        // Get a reference to the real showMainMenu
+        Object.defineProperty(indexModule, 'showMainMenu', {
+          value: originalShowMainMenu,
+          writable: true
+        });
+
+        // Mock inquirer input to return an unknown command
+        const { input } = await import('@inquirer/prompts');
+        input.mockResolvedValueOnce('unknown-command');
+
+        // Call the real showMainMenu
+        await indexModule.showMainMenu();
+
+        // Verify error message was displayed
+        expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Unknown command'));
+        expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Try "configure" instead'));
+      } finally {
+        // Restore the mock
+        Object.defineProperty(indexModule, 'showMainMenu', {
+          value: savedMock,
+          writable: true
+        });
+      }
+    });
+  });
+
+  describe('helloWorld', () => {
+    test('greets the user with the provided name', async () => {
+      // Restore original implementation to test the real function
+      const originalHelloWorld = indexModule.helloWorld;
+
+      // Save the mock function for later restoration
+      const savedMock = indexModuleMocks.helloWorld;
+
+      try {
+        // Get a reference to the real helloWorld
+        Object.defineProperty(indexModule, 'helloWorld', {
+          value: originalHelloWorld,
+          writable: true
+        });
+
+        // Mock inquirer input to return a name
+        const { input } = await import('@inquirer/prompts');
+        input.mockResolvedValueOnce('Test User');
+
+        // Call the real helloWorld
+        await indexModule.helloWorld();
+
+        // Verify greeting was displayed with the name
+        expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Hello, Test User!'));
+        expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Thank you for using {{title}}'));
+      } finally {
+        // Restore the mock
+        Object.defineProperty(indexModule, 'helloWorld', {
+          value: savedMock,
+          writable: true
+        });
+      }
+    });
+
+    test('uses default name if none provided', async () => {
+      // Restore original implementation to test the real function
+      const originalHelloWorld = indexModule.helloWorld;
+
+      // Save the mock function for later restoration
+      const savedMock = indexModuleMocks.helloWorld;
+
+      try {
+        // Get a reference to the real helloWorld
+        Object.defineProperty(indexModule, 'helloWorld', {
+          value: originalHelloWorld,
+          writable: true
+        });
+
+        // Mock inquirer input to return the default value
+        const { input } = await import('@inquirer/prompts');
+        input.mockResolvedValueOnce('world');
+
+        // Call the real helloWorld
+        await indexModule.helloWorld();
+
+        // Verify greeting was displayed with default name
+        expect(consoleLogSpy).toHaveBeenCalledWith(expect.stringContaining('Hello, world!'));
+      } finally {
+        // Restore the mock
+        Object.defineProperty(indexModule, 'helloWorld', {
+          value: savedMock,
+          writable: true
+        });
+      }
+    });
+  });
+});

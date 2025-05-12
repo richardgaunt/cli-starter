@@ -2,7 +2,7 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import fs from 'fs-extra';
 import path from 'path';
-import { logger } from './logger.js';
+import { logger } from './logger.mjs';
 
 const execPromise = promisify(exec);
 
@@ -44,7 +44,7 @@ export async function updatePackageJson(targetDir, projectInfo) {
 
     // Update bin field to use the project name
     packageJson.bin = {
-      [projectInfo.name]: "index.mjs"
+      [projectInfo.name]: 'index.mjs'
     };
 
     // Write back to file

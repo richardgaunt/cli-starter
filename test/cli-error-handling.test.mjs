@@ -125,14 +125,14 @@ describe('CLI Error Handling and Edge Cases', () => {
     const result = await testCLITiming({
       command: 'node',
       args: [
-        path.join(rootDir, 'bin/index.js'),
+        path.join(rootDir, 'index.mjs'),
         'invalid/project:name',  // Invalid name with special chars
         '--yes'
       ],
       inputs: [],
       cwd: testDir,
       timeout: 10000,
-      debug: true
+      debug: false
     });
 
     // The CLI might validate this as an error or sanitize the name
@@ -159,14 +159,14 @@ describe('CLI Error Handling and Edge Cases', () => {
     const result = await testCLITiming({
       command: 'node',
       args: [
-        path.join(rootDir, 'bin/index.js'),
+        path.join(rootDir, 'index.mjs'),
         'existing-project',     // Project name (already exists)
         '--yes'                 // Non-interactive mode
       ],
       inputs: [],
       cwd: testDir,
       timeout: 10000,
-      debug: true
+      debug: false
     });
 
     // The CLI should handle the existing directory in some way
@@ -184,14 +184,14 @@ describe('CLI Error Handling and Edge Cases', () => {
     const result = await testCLITiming({
       command: 'node',
       args: [
-        path.join(rootDir, 'bin/index.js'),
+        path.join(rootDir, 'index.mjs'),
         '--yes',
         '--non-existent-option'
       ],
       inputs: [],
       cwd: testDir,
       timeout: 30000,
-      debug: true
+      debug: false
     });
 
     // Should show an error for unknown option
@@ -213,11 +213,11 @@ describe('CLI Error Handling and Edge Cases', () => {
 
     const result = await testCLITiming({
       command: 'node',
-      args: [path.join(rootDir, 'bin/index.js')],
+      args: [path.join(rootDir, 'index.mjs')],
       inputs: emptyInputs,
       cwd: testDir,
       timeout: 30000,
-      debug: true
+      debug: false
     });
 
     // The CLI should either recover or fail gracefully
@@ -225,7 +225,7 @@ describe('CLI Error Handling and Edge Cases', () => {
       // If it recovered, check that the project was created
       const recoveryDir = path.join(testDir, 'recovery-project');
       expect(fs.existsSync(recoveryDir)).toBe(true);
-      
+
       // Check package.json values
       const packageJson = await fs.readJson(path.join(recoveryDir, 'package.json'));
       expect(packageJson.name).toBe('recovery-project');
@@ -242,11 +242,11 @@ describe('CLI Error Handling and Edge Cases', () => {
     // Start the process with a short test timeout
     const result = await testCLITiming({
       command: 'node',
-      args: [path.join(rootDir, 'bin/index.js')],
+      args: [path.join(rootDir, 'index.mjs')],
       inputs: [], // No inputs, expecting timeout
       cwd: testDir,
       timeout: 1000, // Short timeout to force termination
-      debug: true
+      debug: false
     }).catch(error => {
       // We expect a timeout error, that's ok
       return { error: error.message, stdout: '', stderr: '', code: null };

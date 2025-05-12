@@ -1,7 +1,6 @@
-#!/usr/bin/env node
 
 import { Command } from 'commander';
-import { createCommand } from '../src/commands/create.js';
+import { createCommand } from './src/commands/create.mjs';
 
 const program = new Command();
 

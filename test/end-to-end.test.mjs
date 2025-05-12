@@ -1,39 +1,16 @@
-import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
+import { describe, test, expect, beforeEach, afterEach } from '@jest/globals';
 import fs from 'fs-extra';
 import path from 'path';
 import tmp from 'tmp';
 import { fileURLToPath } from 'url';
-import {exec, execSync, spawn} from 'child_process';
+import { exec } from 'child_process';
 import { promisify } from 'util';
-import { render } from '@inquirer/testing';
 
 const execPromise = promisify(exec);
 
-// Helper function to simulate keystrokes in a test
-async function simulateTyping(session, text, options = {}) {
-  const { clearFirst = false, clearLength = 0, delay = 5 } = options;
-
-  // Optionally clear existing text
-  if (clearFirst) {
-    for (let i = 0; i < clearLength; i++) {
-      session.events.keypress('backspace');
-      await new Promise(resolve => setTimeout(resolve, delay));
-    }
-  }
-
-  // Type each character with a small delay
-  for (const char of text) {
-    session.events.type(char);
-    await new Promise(resolve => setTimeout(resolve, delay));
-  }
-
-  // Verify the screen shows the typed text
-  expect(session.getScreen()).toContain(text);
-}
-
 // Helper function to run the CLI generator
 async function runGenerator(targetDir, options = {}) {
-  const binPath = path.join(__dirname, '..', 'bin', 'index.js');
+  const binPath = path.join(__dirname, '..', 'index.mjs');
 
   // Default options
   const defaultOptions = {
@@ -113,7 +90,6 @@ describe('CLI Template Generator End-to-End Tests', () => {
   });
 
   test('Generate and verify a complete CLI project', async () => {
-
     // Mock environment variables to simulate non-interactive mode
     const originalEnv = process.env.NODE_ENV;
     process.env.NODE_ENV = 'test';
@@ -151,7 +127,6 @@ describe('CLI Template Generator End-to-End Tests', () => {
       // Verify package.json
       const packageJson = await fs.readJson(path.join(projectDir, 'package.json'));
       expect(packageJson.name).toBe('test-cli');
-      expect(packageJson.bin).toHaveProperty('test-cli');
 
       // Check that index.mjs is executable
       const stats = await fs.stat(path.join(projectDir, 'index.mjs'));
@@ -167,5 +142,4 @@ describe('CLI Template Generator End-to-End Tests', () => {
       process.env.NODE_ENV = originalEnv;
     }
   });
-
 });

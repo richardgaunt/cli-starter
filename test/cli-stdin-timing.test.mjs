@@ -1,4 +1,4 @@
-import { describe, test, expect, beforeEach, afterEach, jest } from '@jest/globals';
+import { describe, test, expect } from '@jest/globals';
 import fs from 'fs-extra';
 import path from 'path';
 import tmp from 'tmp';
@@ -139,7 +139,7 @@ describe('CLI Application Tests with Fixed Timing', () => {
     // Run CLI with our timing-based test helper
     const result = await testCLITiming({
       command: 'node',
-      args: [path.join(rootDir, 'bin/index.js')],
+      args: [path.join(rootDir, 'index.mjs')],
       inputs: inputs,
       cwd: projectDir,
       timeout: 120000,
@@ -287,7 +287,7 @@ describe('CLI Application Tests with Fixed Timing', () => {
       inputs: [],
       cwd: createdProjectDir,
       timeout: 30000,
-      debug: true
+      debug: false
     });
 
     // Verify version output
@@ -306,7 +306,7 @@ describe('CLI Application Tests with Fixed Timing', () => {
       inputs: [],         // No input needed for help mode
       cwd: createdProjectDir,
       timeout: 30000,
-      debug: true
+      debug: false
     });
 
     // Verify help output with more specific checks

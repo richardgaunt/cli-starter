@@ -1,14 +1,17 @@
 {
-  "name": "cli-starter-kit",
+  "name": "{{name}}",
   "version": "1.0.0",
-  "description": "CLI starter kit",
+  "description": "{{description}}",
   "main": "index.mjs",
   "type": "module",
   "bin": {
-    "gh-pr": "index.mjs"
+    "{{name}}": "index.mjs"
   },
   "scripts": {
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:features": "node --experimental-vm-modules node_modules/jest/bin/jest.js tests/cli-features.test.mjs --testTimeout=10000",
+    "test:basic": "node --experimental-vm-modules node_modules/jest/bin/jest.js tests/index.test.mjs",
+    "test:all": "node --experimental-vm-modules node_modules/jest/bin/jest.js --testTimeout=10000",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "start": "node index.mjs"

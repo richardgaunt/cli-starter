@@ -1,6 +1,6 @@
 import { exec } from 'child_process';
 import { promisify } from 'util';
-import { logger } from './logger.js';
+import { logger } from './logger.mjs';
 
 const execPromise = promisify(exec);
 
@@ -8,13 +8,13 @@ export async function getGitUser() {
   try {
     const { stdout: nameStdout } = await execPromise('git config --get user.name');
     const { stdout: emailStdout } = await execPromise('git config --get user.email');
-    
+
     return {
       name: nameStdout.trim() || '',
       email: emailStdout.trim() || ''
     };
   } catch (error) {
-    logger.warning('Could not get git user info');
+    logger.warning(`Could not get git user info: ${error.message}`);
     return { name: '', email: '' };
   }
 }
@@ -25,7 +25,7 @@ export async function initGit(targetDir) {
     logger.success('Initialized git repository');
     return true;
   } catch (error) {
-    logger.warning('Failed to initialize git repository');
+    logger.warning(`Failed to initialize git repository: ${error.message}`);
     return false;
   }
 }

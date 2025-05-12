@@ -2,20 +2,18 @@
   "name": "create-cli-template",
   "version": "1.0.0",
   "description": "CLI application starter kit generator",
-  "main": "src/index.js",
+  "main": "src/index.mjs",
   "type": "module",
-  "bin": {
-    "create-cli-template": "./bin/index.js"
-  },
   "scripts": {
-    "start": "node ./bin/index.js",
+    "start": "node index.mjs",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "test:interactive": "node --experimental-vm-modules node_modules/jest/bin/jest.js -t \"Create CLI application with interactive inputs\" --testTimeout=300000",
-    "test:timing": "node --experimental-vm-modules node_modules/jest/bin/jest.js test/cli-stdin-timing.test.js --testTimeout=300000",
-    "test:errors": "node --experimental-vm-modules node_modules/jest/bin/jest.js test/cli-error-handling.test.js --testTimeout=300000",
-    "test:features": "node --experimental-vm-modules node_modules/jest/bin/jest.js test/scaffolded-cli-features.test.js --testTimeout=300000",
-    "test:all": "node --experimental-vm-modules node_modules/jest/bin/jest.js test/cli-stdin-timing.test.js test/cli-error-handling.test.js test/scaffolded-cli-features.test.js test/end-to-end.test.js --testTimeout=300000",
-    "lint": "eslint ."
+    "test:timing": "node --experimental-vm-modules node_modules/jest/bin/jest.js test/cli-stdin-timing.test.mjs --testTimeout=300000",
+    "test:errors": "node --experimental-vm-modules node_modules/jest/bin/jest.js test/cli-error-handling.test.mjs --testTimeout=300000",
+    "test:features": "node --experimental-vm-modules node_modules/jest/bin/jest.js test/scaffolded-cli-features.test.mjs --testTimeout=300000",
+    "test:all": "node --experimental-vm-modules node_modules/jest/bin/jest.js test/cli-stdin-timing.test.mjs test/cli-error-handling.test.mjs test/scaffolded-cli-features.test.mjs test/end-to-end.test.mjs --testTimeout=300000",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "keywords": [
     "cli",
@@ -35,13 +33,10 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.24.0",
-    "@inquirer/testing": "^2.1.46",
-    "bdd-stdin": "^0.2.0",
     "eslint": "^9.25.1",
     "eslint-plugin-n": "^17.17.0",
     "globals": "^16.0.0",
     "jest": "^29.7.0",
-    "mock-stdin": "^1.0.0",
     "tmp": "^0.2.3",
     "twig": "^1.17.1"
   }
