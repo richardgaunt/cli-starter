@@ -14,6 +14,9 @@
     "test:bdd": "node --experimental-vm-modules node_modules/jest/bin/jest.js test/cli-stdin-bdd.test.js --testTimeout=300000",
     "test:manual": "node --experimental-vm-modules node_modules/jest/bin/jest.js -t \"Create CLI application with manual interaction\" --testTimeout=300000",
     "test:timing": "node --experimental-vm-modules node_modules/jest/bin/jest.js test/cli-stdin-timing.test.js --testTimeout=300000",
+    "test:errors": "node --experimental-vm-modules node_modules/jest/bin/jest.js test/cli-error-handling.test.js --testTimeout=300000",
+    "test:features": "node --experimental-vm-modules node_modules/jest/bin/jest.js test/scaffolded-cli-features.test.js --testTimeout=300000",
+    "test:all": "node --experimental-vm-modules node_modules/jest/bin/jest.js test/cli-stdin-timing.test.js test/cli-error-handling.test.js test/scaffolded-cli-features.test.js test/end-to-end.test.js --testTimeout=300000",
     "lint": "eslint ."
   },
   "keywords": [

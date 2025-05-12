@@ -73,13 +73,6 @@ function testCLITiming({ command, args = [], inputs = [], cwd, timeout = 60000, 
         // Wait between inputs - longer delay for the license selection
         const delay = i === inputs.length - 1 ? 1000 : 500;
         await new Promise(resolve => setTimeout(resolve, delay));
-
-        // For license selection (the last input), send an extra Enter
-        if (i === inputs.length - 1) {
-          if (debug) console.log(`[INPUT] Sending extra ENTER for license selection`);
-          proc.stdin.write('\n');
-          await new Promise(resolve => setTimeout(resolve, 300));
-        }
       }
     };
 
@@ -105,26 +98,29 @@ function testCLITiming({ command, args = [], inputs = [], cwd, timeout = 60000, 
 }
 
 describe('CLI Application Tests with Fixed Timing', () => {
+  // Shared variables for all tests in this suite
   let tempDir;
+  let projectDir;
+  let createdProjectDir;
 
-  beforeEach(async () => {
-    // Create temp directory
+  // Create a single temp directory for all tests
+  beforeAll(async () => {
     tempDir = tmp.dirSync({ unsafeCleanup: true }).name;
-    console.log(`Creating temp directory: ${tempDir}`);
+    console.log(`Creating temp directory for all tests: ${tempDir}`);
+    projectDir = path.join(tempDir, 'timing-test');
+    await fs.ensureDir(projectDir);
   });
 
-  afterEach(() => {
-    // Clean up temp directory
+  afterAll(() => {
+    // Clean up temp directory after all tests complete
     if (tempDir) {
-      // fs.removeSync(tempDir);
+      fs.removeSync(tempDir);
     }
   });
 
   // Test with fixed timing approach
   test('Create CLI application with sequential inputs', async () => {
-    // Setup test directory
-    const projectDir = path.join(tempDir, 'timing-test');
-    await fs.ensureDir(projectDir);
+    // Project directory is already set up in beforeAll
 
     // Define inputs in order of prompts
     const inputs = [
@@ -152,7 +148,7 @@ describe('CLI Application Tests with Fixed Timing', () => {
     expect(result.stdout).toContain('created successfully');
 
     // Verify the project was created with our inputs
-    const createdProjectDir = path.join(projectDir, 'interactive-cli');
+    createdProjectDir = path.join(projectDir, 'interactive-cli');
     expect(fs.existsSync(createdProjectDir)).toBe(true);
 
     // Verify package.json contains our inputs
@@ -176,5 +172,150 @@ describe('CLI Application Tests with Fixed Timing', () => {
     const stats = await fs.stat(indexPath);
     const isExecutable = !!(stats.mode & fs.constants.S_IXUSR);
     expect(isExecutable).toBe(true);
+  });
+
+  // Test running the scaffolded application and checking its output
+  test('Run the scaffolded CLI application', async () => {
+    // Skip if the first test didn't create the project directory
+    if (!createdProjectDir || !fs.existsSync(createdProjectDir)) {
+      console.log('Skipping scaffolded CLI test - no project directory found');
+      return;
+    }
+
+    console.log('Testing the scaffolded CLI application...');
+
+    // Run the scaffolded CLI in help mode first to check if it works
+    const helpResult = await testCLITiming({
+      command: 'node',
+      args: [path.join(createdProjectDir, 'index.mjs'), '--help'],
+      inputs: [],
+      cwd: createdProjectDir,
+      timeout: 30000,
+      debug: true
+    });
+
+    // Verify help output
+    expect(helpResult.code).toBe(0);
+    expect(helpResult.stdout).toContain('Usage:');
+    expect(helpResult.stdout).toContain('Options:');
+    expect(helpResult.stdout).toContain('--help'); // Should show help option
+    expect(helpResult.stdout).toContain('Commands:');
+    expect(helpResult.stdout).toContain('configure'); // Should show configure command
+
+    // Test the direct command mode of the scaffolded CLI
+    console.log('Testing direct command mode of scaffolded CLI...');
+
+    const commandResult = await testCLITiming({
+      command: 'node',
+      args: [
+        path.join(createdProjectDir, 'index.mjs'),
+        'configure'      // Use the configure command directly
+      ],
+      inputs: ['Command Mode User'],  // Enter a name when prompted
+      cwd: createdProjectDir,
+      timeout: 30000,
+      debug: true
+    });
+
+    // Verify command output
+    expect(commandResult.code).toBe(0);
+    expect(commandResult.stdout).toContain('What is your name?');
+    expect(commandResult.stdout).toContain('Hello, Command Mode User!');
+    expect(commandResult.stdout).toContain('Thank you for using Interactive CLI');
+
+    // Now test interactive mode of the scaffolded CLI
+    console.log('Testing interactive mode of scaffolded CLI...');
+
+    const interactiveInputs = [
+      'configure',        // Select "configure" option from menu
+      'Scaffolded User'   // Enter a name when prompted
+    ];
+
+    const interactiveResult = await testCLITiming({
+      command: 'node',
+      args: [path.join(createdProjectDir, 'index.mjs')],
+      inputs: interactiveInputs,
+      cwd: createdProjectDir,
+      timeout: 30000,
+      debug: true
+    });
+
+    // Verify interactive CLI output
+    expect(interactiveResult.code).toBe(0);
+    expect(interactiveResult.stdout).toContain('What would you like to do?');
+    expect(interactiveResult.stdout).toContain('What is your name?');
+    expect(interactiveResult.stdout).toContain('Interactive CLI'); // Title from template
+    expect(interactiveResult.stdout).toContain('A CLI created with interactive input'); // Description from template
+
+    // Verify specific output text
+    expect(interactiveResult.stdout).toContain('Hello, Scaffolded User!');
+    expect(interactiveResult.stdout).toContain('Thank you for using Interactive CLI');
+
+    // Test with invalid menu option
+    console.log('Testing invalid menu option...');
+
+    const invalidInputs = [
+      'invalid-command',  // Enter an invalid command
+      ''                  // Just press Enter to exit after error message
+    ];
+
+    const invalidResult = await testCLITiming({
+      command: 'node',
+      args: [path.join(createdProjectDir, 'index.mjs')],
+      inputs: invalidInputs,
+      cwd: createdProjectDir,
+      timeout: 30000,
+      debug: true
+    });
+
+    // Verify error handling for invalid command
+    expect(invalidResult.stdout).toContain('Unknown command');
+    expect(invalidResult.stdout).toContain('Try "configure" instead');
+
+    // Test version command
+    console.log('Testing version command...');
+
+    const versionResult = await testCLITiming({
+      command: 'node',
+      args: [
+        path.join(createdProjectDir, 'index.mjs'),
+        '--version'      // Show version
+      ],
+      inputs: [],
+      cwd: createdProjectDir,
+      timeout: 30000,
+      debug: true
+    });
+
+    // Verify version output
+    expect(versionResult.code).toBe(0);
+    expect(versionResult.stdout).toContain('1.0.0'); // Default version from template
+
+    // Also test help command of the scaffolded CLI to see the available commands
+    console.log('Testing help command of scaffolded CLI...');
+
+    const helpCommandResult = await testCLITiming({
+      command: 'node',
+      args: [
+        path.join(createdProjectDir, 'index.mjs'),
+        '--help'          // Show help
+      ],
+      inputs: [],         // No input needed for help mode
+      cwd: createdProjectDir,
+      timeout: 30000,
+      debug: true
+    });
+
+    // Verify help output with more specific checks
+    expect(helpCommandResult.stdout).toContain('Usage:');
+    // Commander.js uses the script name from process.argv[1], which can be either 'index' or 'interactive-cli'
+    // So we'll check for either pattern to make the test more flexible
+    expect(
+      helpCommandResult.stdout.includes('index [options] [command]') ||
+      helpCommandResult.stdout.includes('interactive-cli [options] [command]')
+    ).toBe(true);
+    expect(helpCommandResult.stdout).toContain('A CLI created with interactive input');
+    expect(helpCommandResult.stdout).toContain('configure');
+    expect(helpCommandResult.stdout).toContain('Configure the application');
   });
 });
