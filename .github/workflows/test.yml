@@ -26,7 +26,7 @@ jobs:
     - name: Lint with ESLint
       run: npm run lint
     - name: Run tests
-      run: npm test # Only runs the passing tests
+      run: npm testLICENSE
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v5
       with:
