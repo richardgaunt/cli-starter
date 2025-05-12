@@ -2,7 +2,7 @@
 
 A starter kit generator for CLI applications. This tool helps you quickly scaffold a new command-line interface application with all the necessary configurations.
 
-[![Tests](https://github.com/richardgaunt/git-manager/actions/workflows/tests.yml/badge.svg)](https://github.com/richardgaunt/git-manager/actions/workflows/tests.yml)
+[![Tests](https://github.com/richardgaunt/cli-starter/actions/workflows/tests.yml/badge.svg)](https://github.com/richardgaunt/cli-starter/actions/workflows/tests.yml)
 
 
 ## ✨ Features
