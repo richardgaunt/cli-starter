@@ -109,7 +109,6 @@ describe('CLI Application Tests with Fixed Timing', () => {
   // Create a single temp directory for all tests
   beforeAll(async () => {
     tempDir = tmp.dirSync({ unsafeCleanup: true }).name;
-    console.log(`Creating temp directory for all tests: ${tempDir}`);
     projectDir = path.join(tempDir, 'timing-test');
     await fs.ensureDir(projectDir);
   });
@@ -133,8 +132,6 @@ describe('CLI Application Tests with Fixed Timing', () => {
       'Test Author',       // Author
       '',                  // License (use default by pressing Enter)
     ];
-
-    console.log('Starting interactive CLI test with fixed timing');
 
     // Run CLI with our timing-based test helper
     const result = await testCLITiming({
@@ -185,8 +182,6 @@ describe('CLI Application Tests with Fixed Timing', () => {
       return;
     }
 
-    console.log('Testing the scaffolded CLI application...');
-
     // Run the scaffolded CLI in help mode first to check if it works
     const helpResult = await testCLITiming({
       command: 'node',
@@ -205,9 +200,6 @@ describe('CLI Application Tests with Fixed Timing', () => {
     expect(helpResult.stdout).toContain('Commands:');
     expect(helpResult.stdout).toContain('configure'); // Should show configure command
 
-    // Test the direct command mode of the scaffolded CLI
-    console.log('Testing direct command mode of scaffolded CLI...');
-
     const commandResult = await testCLITiming({
       command: 'node',
       args: [
@@ -225,9 +217,6 @@ describe('CLI Application Tests with Fixed Timing', () => {
     expect(commandResult.stdout).toContain('What is your name?');
     expect(commandResult.stdout).toContain('Hello, Command Mode User!');
     expect(commandResult.stdout).toContain('Thank you for using Interactive CLI');
-
-    // Now test interactive mode of the scaffolded CLI
-    console.log('Testing interactive mode of scaffolded CLI...');
 
     const interactiveInputs = [
       'configure',        // Select "configure" option from menu
@@ -254,9 +243,7 @@ describe('CLI Application Tests with Fixed Timing', () => {
     expect(interactiveResult.stdout).toContain('Hello, Scaffolded User!');
     expect(interactiveResult.stdout).toContain('Thank you for using Interactive CLI');
 
-    // Test with invalid menu option
-    console.log('Testing invalid menu option...');
-
+    // Test with invalid menu option.
     const invalidInputs = [
       'invalid-command',  // Enter an invalid command
       ''                  // Just press Enter to exit after error message
@@ -276,8 +263,6 @@ describe('CLI Application Tests with Fixed Timing', () => {
     expect(invalidResult.stdout).toContain('Try "configure" instead');
 
     // Test version command
-    console.log('Testing version command...');
-
     const versionResult = await testCLITiming({
       command: 'node',
       args: [
@@ -294,9 +279,7 @@ describe('CLI Application Tests with Fixed Timing', () => {
     expect(versionResult.code).toBe(0);
     expect(versionResult.stdout).toContain('1.0.0'); // Default version from template
 
-    // Also test help command of the scaffolded CLI to see the available commands
-    console.log('Testing help command of scaffolded CLI...');
-
+    // Test help command of the scaffolded CLI to see the available commands
     const helpCommandResult = await testCLITiming({
       command: 'node',
       args: [

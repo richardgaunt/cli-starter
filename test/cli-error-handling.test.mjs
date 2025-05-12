@@ -106,7 +106,6 @@ describe('CLI Error Handling and Edge Cases', () => {
   // Setup before all tests
   beforeAll(async () => {
     tempDir = tmp.dirSync({ unsafeCleanup: true }).name;
-    console.log(`Creating temp directory for error tests: ${tempDir}`);
     testDir = path.join(tempDir, 'error-test');
     await fs.ensureDir(testDir);
   });
@@ -140,9 +139,7 @@ describe('CLI Error Handling and Edge Cases', () => {
     if (result.code !== 0) {
       expect(result.stderr).toBeTruthy();
     } else {
-      // If it didn't error, it should have sanitized the name
-      // Just verify it didn't crash and handled the invalid name somehow
-      console.log('CLI sanitized the invalid project name instead of rejecting it');
+      // If it didn't error, it should have sanitized the name.
     }
   });
 

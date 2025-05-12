@@ -1,8 +1,8 @@
-# 🚀 Create CLI Template
+# 🚀 CLI Maker
 
 A starter kit generator for CLI applications. This tool helps you quickly scaffold a new command-line interface application with all the necessary configurations.
 
-[![Tests](https://github.com/richardgaunt/cli-starter/actions/workflows/tests.yml/badge.svg)](https://github.com/richardgaunt/cli-starter/actions/workflows/tests.yml)
+[![Tests](https://github.com/richardgaunt/cli-maker/actions/workflows/tests.yml/badge.svg)](https://github.com/richardgaunt/cli-maker/actions/workflows/tests.yml)
 
 
 ## ✨ Features
@@ -16,17 +16,33 @@ A starter kit generator for CLI applications. This tool helps you quickly scaffo
 
 ## 📋 Installation
 
+### From GitHub Packages
+
 ```bash
-# Install globally
-npm install -g create-cli-template
+# Install globally from GitHub Packages
+npm install -g @richardgaunt/cli-maker
 
 # Or use directly with npx
-npx create-cli-template my-cli-app
+npx @richardgaunt/cli-maker my-cli-app
 
-# For development
-git clone <repository-url>
-cd create-cli-template
+# For GitHub Packages, you'll need to authenticate first:
+# 1. Create a personal access token with 'read:packages' scope
+# 2. Create or update ~/.npmrc with:
+//npm.pkg.github.com/:_authToken=YOUR_TOKEN
+@richardgaunt:registry=https://npm.pkg.github.com
+```
+
+### From the Repository
+
+```bash
+# Clone the repository
+git clone https://github.com/richardgaunt/cli-maker.git
+cd cli-maker
+
+# Install dependencies
 npm install
+
+# Link the package locally for testing
 npm link
 ```
 
@@ -34,16 +50,16 @@ npm link
 
 ```bash
 # Create a new CLI application with interactive prompts
-create-cli-template my-cli-app
+cli-maker my-cli-app
 
 # Skip prompts and use defaults
-create-cli-template my-cli-app --yes
+cli-maker my-cli-app --yes
 
 # Skip git initialization
-create-cli-template my-cli-app --no-git
+cli-maker my-cli-app --no-git
 
 # Skip dependency installation
-create-cli-template my-cli-app --no-install
+cli-maker my-cli-app --no-install
 ```
 
 ## ⚙️ CLI Options
@@ -165,7 +181,7 @@ test('Create CLI application with custom inputs', async () => {
 ```bash
 # Clone this repository
 git clone <repository-url>
-cd create-cli-template
+cd cli-maker
 
 # Install dependencies
 npm install
@@ -174,7 +190,7 @@ npm install
 npm link
 
 # Run the CLI
-create-cli-template test-app
+cli-maker test-app
 
 # Run tests
 npm test

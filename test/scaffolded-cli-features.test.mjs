@@ -107,7 +107,6 @@ describe('Scaffolded CLI Application Features', () => {
   // Create a temp dir and generate a CLI project before all tests
   beforeAll(async () => {
     tempDir = tmp.dirSync({ unsafeCleanup: true }).name;
-    console.log(`Creating temp directory for scaffolded tests: ${tempDir}`);
     projectDir = path.join(tempDir, 'scaffolded-test');
     await fs.ensureDir(projectDir);
 
@@ -120,9 +119,7 @@ describe('Scaffolded CLI Application Features', () => {
       '',                        // License (default)
     ];
 
-    console.log('Creating a CLI application for feature testing...');
-
-    // Run the CLI generator
+    // Creating a CLI application for feature testing.
     const result = await testCLITiming({
       command: 'node',
       args: [path.join(rootDir, 'index.mjs')],
@@ -143,8 +140,6 @@ describe('Scaffolded CLI Application Features', () => {
     if (!fs.existsSync(scaffoldedDir)) {
       throw new Error('Scaffolded project directory not found');
     }
-
-    console.log(`Scaffolded project created at: ${scaffoldedDir}`);
   });
 
   // Clean up after all tests
