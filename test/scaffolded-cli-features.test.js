@@ -46,8 +46,11 @@ function testCLITiming({ command, args = [], inputs = [], cwd, timeout = 60000, 
 
     // Handle completion
     proc.on('close', code => {
-      if (debug) console.log(`[DONE] Process exited with code ${code}`);
       allDone = true;
+      // Only log if we're still in the active part of the test
+      if (debug && !timeoutId._destroyed) {
+        console.log(`[DONE] Process exited with code ${code}`);
+      }
       resolve({ stdout, stderr, code });
     });
 
