@@ -12,14 +12,14 @@ export function registerCommands(program) {
   program
     .version('1.0.0')
     .description('{{description}}');
-  
+
   program
     .command('configure')
     .description('Configure the application')
     .action(() => {
       helloWorld();
     });
-    
+
   return program;
 }
 
@@ -43,12 +43,12 @@ export async function showMainMenu() {
   console.log(chalk.green('🚀 {{title}}'));
   console.log(chalk.white('{{description}}'));
   console.log();
-  
+
   const action = await input({
     message: 'What would you like to do?',
     default: 'configure',
   });
-  
+
   if (action === 'configure') {
     helloWorld();
   } else {
@@ -64,7 +64,9 @@ export async function helloWorld() {
     message: 'What is your name?',
     default: 'world',
   });
-  
+
   console.log(chalk.blue(`Hello, ${name}!`));
   console.log(chalk.green('Thank you for using {{title}}'));
 }
+
+main();

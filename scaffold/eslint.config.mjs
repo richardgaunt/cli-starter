@@ -81,6 +81,11 @@ export default [
       // Node.js specific
       'n/exports-style': ['error', 'module.exports'],
       'n/file-extension-in-import': ['error', 'always', { '.js': 'never', '.mjs': 'always' }],
+      'n/no-extraneous-import': ['error', {
+        'allowModules': [
+          '@jest/globals'
+        ],
+      }],
       'n/prefer-global/buffer': ['error', 'always'],
       'n/prefer-global/console': ['error', 'always'],
       'n/prefer-global/process': ['error', 'always'],
